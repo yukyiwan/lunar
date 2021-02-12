@@ -1,0 +1,261 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Kung Hei Fat Choy!</title>
+
+<!-- Welcome to ZIM at https://zimjs.com - Code Creativity!                              -->
+<!-- ZIM runs on the HTML Canvas powered by JavaScript and CreateJS https://createjs.com -->
+<!-- ZIM is free to use. You can donate to help improve ZIM at https://zimjs.com/donate  -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-187928330-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-187928330-2');
+</script>
+
+<script src="https://zimjs.org/cdn/1.3.2/createjs.js"></script>
+<script src="https://zimjs.org/cdn/cat/03/zim.js"></script>
+
+<script src="modules/present.js"></script>
+<script src="modules/data.js"></script>
+<!-- use zimjs.com/distill for minified individual functions! -->
+
+<script>
+
+// SCALING OPTIONS
+// scaling can have values as follows with full being the default
+// "fit"	sets canvas and stage to dimensions and scales to fit inside window size
+// "outside"	sets canvas and stage to dimensions and scales to fit outside window size
+// "full"	sets stage to window size with no scaling
+// "tagID"	add canvas to HTML tag of ID - set to dimensions if provided - no scaling
+
+const scaling = "fit"; // this will resize to fit inside the screen dimensions
+const width = 1024;
+const height = 768;
+const color = "#140f38"; // ZIM colors like green, blue, pink, faint, clear, etc.
+const outerColor = dark;//"#140f38"; // any HTML colors like "violet", "#333", etc. are fine to use
+const background = ["logo.png", "gold.png","line.png"];
+const fonts = [{font:"Barlista", src:"Barlista.ttf"},{font:"Roboto-Regular", src:"Roboto-Regular.ttf"}];
+const animals = ["ox.png", "rat.png", "pig.png", "dog.png", "rooster.png", "monkey.png", "goat.png", "horse.png", "snake.png", "dragon.png", "rabbit.png", "tiger.png"];
+const animalsp = ["oxp.png", "ratp.png", "pigp.png", "dogp.png", "roosterp.png", "monkeyp.png", "goatp.png", "horsep.png", "snakep.png", "dragonp.png", "rabbitp.png", "tigerp.png"];
+const music = ["happyTimes.mp3"];
+const assets=background.concat(fonts).concat(animals).concat(animalsp).concat(music);
+const path = "assets/"
+const waiter = new Waiter(null, null, null, "#8b92c8",20);
+const frame = new Frame(scaling, width, height, color, outerColor, assets, path,waiter);
+frame.on("ready", () => { // ES6 Arrow Function - like function(){}
+    zog("ready from ZIM Frame"); // logs in console (F12 - choose console)
+
+    const stage = frame.stage;
+    let stageW = frame.width;
+    let stageH = frame.height;
+
+    // see https://zimjs.com/learn.html for video and code tutorials
+    // see https://zimjs.com/docs.html for documentation
+    // see https://zimjs.com/bits.html for 64 Interactive Media techniques
+
+    // *** NOTE: ZIM Cat defaults to time in seconds
+    // All previous versions, examples, videos, etc. have time in milliseconds
+    // This can be set back with TIME = "milliseconds" but we suggest you give it a try!
+    // There will be a warning in the conslole if your animation is not moving ;-)
+
+    // put your code here (you can delete this sample code)
+      let logo;
+      let logo1;
+      let line;
+      let instructions;
+      let instructions1;
+      let instructions2;
+      let data;
+      let userSign;
+      let uSign;
+      let radar;
+      let chat;
+      let data1;
+      let container1;
+      let button;
+      let button1;
+      let button2;
+      let icons = [];
+      let clones = [];
+      let n = -1;
+
+
+      //1. landing page
+      asset("happyTimes.mp3").play({volume:0.1});
+      const gold = asset("gold.png").scaleTo(stage,100).centerReg().pos(0,0,RIGHT,TOP).alp(0)
+      .animate({props:{alpha:1,x:stageW/2,y:stageH/2},time:.5,ease: "backInOut", call:greet});
+      function greet (){
+          logo = asset("logo.png").scaleTo(stage,18).pos(50,50).alp(0)
+          .animate({props:{alpha:1},time:2,ease: "linear"});
+          const greeting = new Label ("Kung Hei Fat Choy!",69,"Barlista","#564c40").centerReg().mov(0,-50).alp(0)
+          .animate({props:{alpha:1},time:2,ease: "linear"});
+          const container = new Container().center().mov(0,200).alp(0);
+          line = asset("line.png").scaleTo(stage,80).centerReg(container);//.mov(0,50);
+          instructions = new Label("A believer in Oriental Astrology? Enter your year of birth.",16,"Roboto-Regular","#8b92c8",null,null,null,null,null,true).centerReg(container).loc(line).mov(0,50);
+          const stepper = new Stepper({max:2021, selectedIndex:2021}).sca(.39).centerReg(container).loc(instructions).mov(0,45);
+          const label = new Label("GO",20,"Roboto-Regular",white,"#140f38",null,null,null,null,true);
+          button = new Button(stepper.width, stepper.height, label, "#221c4a", "#8b92c8").sca(1).centerReg(container).loc(stepper).mov(0,55)
+                          .tap(e=>{
+                            container.removeFrom();
+                            logo.removeFrom();
+                            gold.removeFrom();
+                            greeting.removeFrom();
+                            // createjs.Sound.stop();
+                            signConvert(stepper.selectedIndex);
+                          });stepper.on("mouseover", ()=>{
+                    instructions.alp(0);
+                    instructions1 = new Label("Swipe left or right to fast-forward",16,"Roboto-Regular",white).centerReg(container).loc(instructions);
+          });
+          stepper.on("mouseout", e=>{
+            instructions1.alp(0);
+            instructions.alp(1)});
+          container.animate({props:{alpha:1, y:stageH/2+100}, time:1, wait:5, ease: "linear"});
+    }
+
+    //2. Year of birth to zodiac data conversion
+    function signConvert (year) {
+      data = new kayden.Loadsigndata(year);
+      userSign = data2021.indexOf(data);
+      userRadar(userSign);
+    }
+
+    //Radar chart projection
+    function userRadar (userSign){
+      uSign = asset(animalsp[userSign]).sca(.55).center().mov(0,-50);
+      radar = new kayden.Radar(225,5,10,data).center().mov(0,-50).bot(); //100, 10, 5, [1,2,3,4,5,1,2,3,4,5]
+      radarResults(radar);
+    }
+
+    //Data projection on radar chart
+    function radarResults (radar) {
+      let luck = ["Overall", "Wealth", "Career", "Romance", "Health"];
+      let label = new Label("NEXT",18,"Roboto-Regular",white,"#140f38",null,null,null,null);
+      loop (5, (i)=>{
+        new Label(luck[i],20,"Roboto-Regular","white","#dbca1c",null,null,null,null,true).centerReg(radar).reg(null,radar.radius*1.2)//
+         .rot((360/radar.dimensions)*i)
+      });
+      container1 = new Container().center().mov(0,100).alp(0);
+      button1 = new Button(button.width, button.height, label, "#221c4a", "#8b92c8").sca(1).centerReg(container1)
+      .tap(e=>{
+        uSign.sca(2).center();
+        radar.removeFrom();
+        button1.removeFrom();
+        zodiacBar();
+      });
+      line.clone().sca(.3).scaleTo(stage,80).centerReg(container1).loc(button1).mov(0,-50);
+      new Label("Source: Data from Oriental Astrology Master Ling-ling Mak",10,"Roboto-Regular","#564c40",null,null,null,null,null,true).centerReg(container1).loc(button1).mov(0,45)//.pos(30,30.centerReg().loc(button1).mov(0)//,RIGHT,TOP);
+      container1.animate({props:{alpha:1, y:stageH-100}, time:3, wait:2, ease:"backInOut", call:change});
+    }
+
+    //Change color of radar chart
+    function change(){
+      radar.changeColor(white, white, clear, "#564c40");
+    }
+
+    //Returning a randomised color
+    function rHex() {
+      let pantone = "#";
+      const codes = ["a","b","c","d","e","f","0","1","2","3","4","5","6","7","8","9"];
+      loop(6, i=>{
+      pantone += shuffle(codes)[0]});
+      return(pantone)
+    }
+
+    let random1=[rHex().lighten(.75),rHex().lighten(.75).lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75),rHex().lighten(.75)];
+
+    //Creation of a bar chart illustrating all zodiacs' overall luck in 2021
+    function zodiacBar(){
+      data1 = new kayden.Zodiac();
+      bar = new kayden.Bar(stageW/1.5, stageH/1.5, 12,10,data1,random1,clear,white,clear,.1,.1,true).centerReg().mov(0,-25);
+      var ratio = bar.width/bar.dimensions;
+      loop(12, (i)=>{
+        icons.push(asset(animals[i]).centerReg().pos(0,0,LEFT,BOTTOM,bar).alp(0).mov(i*ratio+ratio/15,60)
+        .animate({props:{alpha:0}, time:2}));
+      });
+      let label = new Label("HOME",18,"Roboto-Regular",white,"#140f38",null,null,null,null,true);
+      let button2 = new Button(button.width, button.height, label, "#221c4a", "#8b92c8").alp(0).sca(1).centerReg(container1).loc(button1)
+      .animate({props:{alpha:1},time:1, call:interact}).tap(e=>{
+        zgo("index.html");
+      });
+    }
+
+    //Event functions enabling user interaction with the bar chart
+    function interact () {
+      instructions2=new Label("Click on a bar to check it out!",16,"Roboto-Regular",white).alp(0).center().mov(0,-bar.height/2-15).animate({
+        props:{alpha:1},
+        time:2,
+        loop:true,
+        loopCount:3,
+      })
+      logo1=logo.clone().alp(0).loc(logo).animate({
+        props:{alpha:1},
+        time:3
+        // call:changeB
+      }).tap(e=>{zgo("index.html")});
+
+      bar.on("mouseover", sense);
+      // if (mobile) bar.on("click", bar);
+      bar.tap(newRadar);
+      loop(clones.length, (i)=>{
+        clones[i].tap(newRadar);
+      });
+    }
+
+    //Displaying user selection
+    function sense() {
+      Ticker.add(()=>{
+        if (bar.ref !== n && (bar.ref !==-1 && bar.ref!==.1)) { //a debugger to screen out noise
+        instructions2.removeFrom();
+        clones.push(icons[bar.ref].clone().sca(.5).alp(0.5).center().mov(0,-bar.height/2-15)
+          .animate({props:{alpha:1},time:.1}));
+        n=bar.ref
+        }
+        if (clones.length>1) {
+          loop(clones.length-1, (i)=>{
+                clones[i].removeFrom();
+          });
+        }
+      });
+    }
+
+    //Removal of bar chart and creation of newly selected radar chart
+    function newRadar() {
+        if (bar.ref !==-1 && bar.ref !==.1) { //a debugger to screen out noise
+          let year = bar.ref;
+          logo1.removeFrom();
+          instructions2.removeFrom();
+          bar.removeFrom();
+          container1.removeFrom();
+          uSign.removeFrom();
+          if (clones.length>0) {
+            loop(clones.length, (i)=>{
+                  clones[i].removeFrom();
+            });}
+          userRadar(year)
+    }}
+
+    //Change color of bar chart
+    function changeB() {
+      bar.changeColor(white,clear,yellow,clear);
+    }
+
+
+    stage.update(); // this is needed to show any changes
+
+}); // end of ready
+
+</script>
+
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+
+</head>
+
+<body>
+<!-- canvas with id="myCanvas" is made by zim Frame -->
+</body>
+</html>
